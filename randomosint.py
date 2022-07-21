@@ -8,29 +8,24 @@ import argparse
 import re
 import socket
 import requests
+import time
 
+#check MS only
+if(os.name == 'nt') or (sysplatform == "win32"): 
+	os.system("")  #enable ansi color
 
-def color(text, color_code):
-    if sys.platform == "win32" and os.getenv("TERM") != "xterm":
-        return text
-
-    return '\x1b[%dm%s\x1b[0m' % (color_code, text)
-
-
-def red(text):
-    return color(text, 31)
-
-def blue(text):
-    return color(text, 34)
-
+#color
+color = {
+	"purple": "\033[5;95m",
+	"cyan": "\033[5;96m",
+	"red": "\033[0;31m",
+	"clear": "\033[0m",
+}
 
 #start
-
 if __name__ == "__main__":
 
-
-
-
+#create request fields
 	def request_info(url):
 		request = requests.get(url).json()
 		response = request.text
@@ -52,26 +47,35 @@ if __name__ == "__main__":
 	parser.add_argument("-n","--nmap", help="Run a quick nmap scan from hackertarget")
 	args = parser.parse_args()
 
-	my_ip = input("Enter the IP Address:")
+print(color["purple"],"Please enter the IP Address:", color["clear"])
+target_ip = input()
 
-	print(blue('Get Reverse DNS, GeoIP, NMAP, Traceroute and pulls HTTP Headers for an IP address'))
-	print(blue('quick hacker target script'))
-	print('\n')
-	print(blue('Your Target IP address is {0}'.format(my_ip)))
-	print('\n')
+print(color["cyan"], 'This program captures: GeoIP, nmap, grabs HTTP Headers, and reverse DNS for an IP address',color["clear"])
+print(color["purple"],'Quick Hacker Target Script', color["clear"])
+print('\n')
+print(color["cyan"], 'Your Target IP address is {0}'.format(target_ip), color["clear"])
+print('\n')
 
 
-    #Get IP To SCAN
+#Get IP To SCAN
+print(color["cyan"], 'Would you like target info about {0}? (Y/N):'.format(target_ip), color["clear"])
 
-resp = input(blue('Would you like target info about {0}? (Y/N):'.format(my_ip)))
+resp = input()
 
 if resp.lower() in ["yes", "y"]:
-        badip = my_ip
+        target = target_ip
 else:
-        badip = input(blue("What IP would you like to check?: "))
+        target = input(prCyan("What IP would you like to check?: "))
 
 print('\n')
 
+def loading():
+    print("Loading...")
+    for i in range(0, 100):
+        time.sleep(0.1)
+        sys.stdout.write(u"\u001b[1000D" + str(i + 1) + "%")
+        sys.stdout.flush()
+    return loading()
 
     #IP INFO
 if args.dns:
@@ -127,18 +131,20 @@ if args.nmap:
 	url = "https://api.hackertarget.com/nmap/?q=" + target
 	request_info(url)
 	
-print(red('Reverse DNS Information:'))
-print(blue(args.rdns))
+print(color["cyan"],('Reverse DNS Information:'))
+print(color["purple"],(args.rdns))
 print('\n')
-print(red('GEOIP Information:'))
-print(blue(args.iplookup))
+print(color["purple"],('GEOIP Information:'))
+print(color["cyan"],(args.iplookup))
 print('\n')
-print(red('NMAP of Traget (Only Ports: 21,25,80 and 443):'))
-print(blue(args.nmap))
+print(color["cyan"],('NMAP of Traget (Only Ports: 21,25,80 and 443):'))
+print(color["purple"],(args.nmap))
 print('\n')
-print(red('HTTP Headers:'))
-print(blue(args.header))
+print(color["cyan"],('HTTP Headers:'))
+print(color["purple"],(args.header))
 print('\n')
-print(red('HTTP Headers:'))
-print(blue(args.header))
+print(color["cyan"],('HTTP Headers:'))
+print(color["purple"],(args.header), color["clear"])
 print('\n')
+
+exit = input()
